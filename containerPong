@@ -1,0 +1,28 @@
+#!/bin/bash
+
+##hardoced variables
+log="`pwd`/LOG";
+imagetag="containerpong";
+
+##macros
+info() { echo "*** $1"; }
+error() { echo "!!!!! $1" && exit 1; }
+
+##check if the image needs to be created
+docker inspect --type=image $imagetag > /dev/null 2>&1;
+if [[ "$?" -ne "0" ]]; then
+    info "No image detected...";	
+    info "Creating image";
+    docker build -t $imagetag .;
+    if [[ "$?" -ne "0" ]]; then
+        echo "!!!!! Unable to build '$imagetag' image" && exit 1;
+    fi;
+else
+    info "Image detected, skipping creation...";
+fi;
+
+##start the game up
+entrypoint="/source/container/run";
+overwrite="`pwd`/source:/source";
+docker run -it -v $overwrite --entrypoint=$entrypoint $imagetag;
+

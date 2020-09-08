@@ -1,0 +1,38 @@
+#!/bin/bash
+
+log="/source/image/LOG";
+
+error() { echo "!!!!! $1" && exit 1; }
+info() { echo "*** $1"; }
+
+verify() {
+    if [[ "$1" -ne "0" ]]; then 
+        error "!!!!! '$2'";
+    fi;
+}
+
+add() {
+    info "Adding repository --> '$1'";
+    add-apt-repository $1 > $log 2>&1;
+    verify "$?" "Unable to add repository '$1'";
+}
+
+update() {
+    info "Updating";
+    apt-get -y update > $log 2>&1;
+    verify "$?" "Unable to update";
+}
+
+install() {
+    info "Installing --> '$1'";
+    apt-get -y install "$1" > $log 2>&1;
+    verify "$?" "Unable to install '$1'";  
+}
+
+##MAIN
+update;
+install "software-properties-common";
+add "ppa:deadsnakes/ppa";
+update;
+install "python3.8";
+

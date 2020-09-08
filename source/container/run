@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "We're in the container!!!";
+
+echo "and now we're updated...";
+
