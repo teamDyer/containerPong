@@ -11,28 +11,27 @@ verify() {
     fi;
 }
 
-add() {
-    info "Adding repository --> '$1'";
-    add-apt-repository $1 > $log 2>&1;
-    verify "$?" "Unable to add repository '$1'";
-}
+##base
+info "Install base packages";
+apt-get -y update > $log 2>&1;
+apt-get -y install software-properties-common git libgl1-mesa-dev > $log 2>&1;
+verify "$?" "Unable to install base packages";  
 
-update() {
-    info "Updating";
-    apt-get -y update > $log 2>&1;
-    verify "$?" "Unable to update";
-}
+##graphics
+info "Install graphics packages";
+apt-get -y install libglu1-mesa-dev freeglut3-dev mesa-common-dev > $log 2>&1;
+verify "$?" "Unable to install graphics packages";
 
-install() {
-    info "Installing --> '$1'";
-    apt-get -y install "$1" > $log 2>&1;
-    verify "$?" "Unable to install '$1'";  
-}
+##python helpers
+info "Install python helpers";
+apt-get -y install python3-setuptools python3-dev > $log 2>&1;
+verify "$?" "Unable to install python helpers";  
 
-##MAIN
-update;
-install "software-properties-common";
-add "ppa:deadsnakes/ppa";
-update;
-install "python3.8";
+##pyglet
+info "Install pyglet";
+mkdir /pyglet;
+cd /pyglet;
+git clone https://github.com/pyglet/pyglet.git > $log 2>&1;
+cd pyglet;
+python3 setup.py install --user > $log 2>&1;
 

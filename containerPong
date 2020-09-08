@@ -24,5 +24,5 @@ fi;
 ##start the game up
 entrypoint="/source/container/run";
 overwrite="`pwd`/source:/source";
-docker run -it -v $overwrite --entrypoint=$entrypoint $imagetag;
+docker run -it -v $overwrite --rm --entrypoint=$entrypoint $imagetag;
 
